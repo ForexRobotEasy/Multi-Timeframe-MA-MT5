@@ -1,0 +1,87 @@
+
+//+------------------------------------------------------------------+
+//|                                              Multi Timeframe MA MT5|
+//|                                                            forexroboteasy.com|
+//|                                                          Forex Robot Easy Team|
+//+------------------------------------------------------------------+
+#property copyright 'forexroboteasy.com'
+#property link      'forexroboteasy.com'
+
+//--- indicator settings
+#property indicator_chart_window
+#property indicator_buffers 3
+#property indicator_color1 Red
+#property indicator_color2 Blue
+#property indicator_color3 Green
+
+//--- input parameters
+input int MA1_Period = 14;
+input ENUM_TIMEFRAMES MA1_Timeframe = PERIOD_H1;
+input ENUM_MA_METHOD MA1_Method = MODE_SMA;
+input ENUM_APPLIED_PRICE MA1_Price = PRICE_CLOSE;
+
+input int MA2_Period = 28;
+input ENUM_TIMEFRAMES MA2_Timeframe = PERIOD_H4;
+input ENUM_MA_METHOD MA2_Method = MODE_EMA;
+input ENUM_APPLIED_PRICE MA2_Price = PRICE_CLOSE;
+
+input int MA3_Period = 50;
+input ENUM_TIMEFRAMES MA3_Timeframe = PERIOD_D1;
+input ENUM_MA_METHOD MA3_Method = MODE_SMMA;
+input ENUM_APPLIED_PRICE MA3_Price = PRICE_CLOSE;
+
+//--- indicator buffers
+double MA1_Buffer[];
+double MA2_Buffer[];
+double MA3_Buffer[];
+
+//--- indicator initialization function
+int OnInit()
+{
+   //--- indicator buffers mapping
+   SetIndexBuffer(0, MA1_Buffer);
+   SetIndexBuffer(1, MA2_Buffer);
+   SetIndexBuffer(2, MA3_Buffer);
+
+   //--- setting plot type
+   PlotIndexSetInteger(0, PLOT_DRAW_TYPE, DRAW_LINE);
+   PlotIndexSetInteger(1, PLOT_DRAW_TYPE, DRAW_LINE);
+   PlotIndexSetInteger(2, PLOT_DRAW_TYPE, DRAW_LINE);
+
+   //--- setting plot color
+   PlotIndexSetInteger(0, PLOT_LINE_COLOR, Red);
+   PlotIndexSetInteger(1, PLOT_LINE_COLOR, Blue);
+   PlotIndexSetInteger(2, PLOT_LINE_COLOR, Green);
+
+   //--- name for DataWindow and indicator subwindow label
+   IndicatorShortName('Multi Timeframe MA MT5');
+
+   return(INIT_SUCCEEDED);
+}
+
+//--- indicator calculation function
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
+{
+   //--- calculate MA1
+   ArraySetAsSeries(MA1_Buffer, true);
+   CopyBuffer(NULL, MA1_Timeframe, 0, rates_total, MA1_Buffer);
+
+   //--- calculate MA2
+   ArraySetAsSeries(MA2_Buffer, true);
+   CopyBuffer(NULL, MA2_Timeframe, 0, rates_total, MA2_Buffer);
+
+   //--- calculate MA3
+   ArraySetAsSeries(MA3_Buffer, true);
+   CopyBuffer(NULL, MA3_Timeframe, 0, rates_total, MA3_Buffer);
+
+   return(rates_total);
+}
